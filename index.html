@@ -349,6 +349,113 @@
       </form>
     </section>
 
+    <!-- Settings -->
+    <section id="settings" class="view" aria-labelledby="settings-title">
+      <header class="view-head">
+        <h2 id="settings-title" tabindex="-1">Settings</h2>
+        <p class="lede">Changes save automatically.</p>
+      </header>
+
+      <div class="settings-grid">
+        <form class="card" id="pace-form" novalidate>
+          <fieldset>
+            <legend>Reading time &amp; cap</legend>
+            <div class="field">
+              <label for="pace-input">Reading pace (minutes per page)</label>
+              <input id="pace-input" type="text" inputmode="decimal" autocomplete="off" aria-describedby="pace-input-msg">
+              <p class="field-msg" id="pace-input-msg"></p>
+            </div>
+            <div class="field">
+              <label for="unit-select">Show book length in</label>
+              <select id="unit-select">
+                <option value="pages">Pages</option>
+                <option value="minutes">Minutes of reading</option>
+                <option value="hours">Hours of reading</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="pace-cap">Page cap</label>
+              <input id="pace-cap" type="text" inputmode="numeric" autocomplete="off" aria-describedby="pace-cap-hint pace-cap-msg">
+              <p class="hint" id="pace-cap-hint">Leave blank for no cap.</p>
+              <p class="field-msg" id="pace-cap-msg"></p>
+            </div>
+          </fieldset>
+        </form>
+
+        <form class="card" id="convert-form" novalidate>
+          <fieldset>
+            <legend>Unit converter</legend>
+            <div class="field">
+              <label for="conv-value">Amount</label>
+              <input id="conv-value" type="text" inputmode="decimal" value="300" autocomplete="off" aria-describedby="conv-value-msg">
+              <p class="field-msg" id="conv-value-msg"></p>
+            </div>
+            <div class="convert-row">
+              <div class="field">
+                <label for="conv-from">From</label>
+                <select id="conv-from">
+                  <option value="pages">Pages</option>
+                  <option value="minutes">Minutes</option>
+                  <option value="hours">Hours</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="conv-to">To</label>
+                <select id="conv-to">
+                  <option value="pages">Pages</option>
+                  <option value="minutes">Minutes</option>
+                  <option value="hours" selected>Hours</option>
+                </select>
+              </div>
+            </div>
+            <p class="convert-result">
+              <output id="conv-output" for="conv-value conv-from conv-to" aria-live="polite"></output>
+            </p>
+          </fieldset>
+        </form>
+
+        <form class="card" id="tag-form" novalidate>
+          <fieldset>
+            <legend>Tags</legend>
+            <ul class="tag-list" id="tag-list"></ul>
+            <div class="field">
+              <label for="tag-input">New tag</label>
+              <div class="input-row">
+                <input id="tag-input" type="text" autocomplete="off" aria-describedby="tag-input-msg">
+                <button type="submit" class="btn">Add tag</button>
+              </div>
+              <p class="field-msg" id="tag-input-msg"></p>
+            </div>
+          </fieldset>
+        </form>
+
+        <div class="card" id="data-card">
+          <h3 class="card__title">Your data</h3>
+          <p>Everything is stored in this browser only. Export a backup now and then. The JSON file includes your notes.</p>
+          <div class="btn-row">
+            <button type="button" class="btn" id="export-json">Export JSON</button>
+            <button type="button" class="btn" id="export-csv">Export CSV</button>
+          </div>
+
+          <fieldset class="import">
+            <legend>Import JSON</legend>
+            <div class="radio-row">
+              <label class="check"><input type="radio" name="import-mode" value="merge" checked> <span>Merge with current books</span></label>
+              <label class="check"><input type="radio" name="import-mode" value="replace"> <span>Replace current books</span></label>
+            </div>
+            <label for="import-file" class="btn file-btn">Choose a .json file…</label>
+            <input type="file" id="import-file" accept=".json,application/json" class="file-input">
+            <div class="import-report" id="import-report" role="alert" hidden></div>
+          </fieldset>
+
+          <div class="btn-row">
+            <button type="button" class="btn" data-action="load-sample">Load sample books</button>
+            <button type="button" class="btn btn--danger" id="clear-all">Delete all books</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
 </body>
 </html>
