@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tests · Book &amp; Notes Vault</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <style>
+    :root { color-scheme: light dark; --pass: #2c6a37; --fail: #a32626; }
+    @media (prefers-color-scheme: dark) { :root { --pass: #8fd19a; --fail: #ff8f86; } }
+    body { font: 1rem/1.5 system-ui, sans-serif; max-width: 52rem; margin: 0 auto; padding: 1.5rem 16px 3rem; }
+    h1 { font-family: Georgia, serif; margin-bottom: 0.25rem; }
+    h2 { font-size: 1.1rem; margin: 1.75rem 0 0.5rem; }
+    ul { list-style: none; padding: 0; margin: 0; }
+    li { padding: 0.3rem 0; border-bottom: 1px solid color-mix(in srgb, currentColor 15%, transparent); }
+    .pass::before { content: "✓ "; color: var(--pass); font-weight: 700; }
+    .fail { color: var(--fail); }
+    .fail::before { content: "✕ "; font-weight: 700; }
+    .detail { display: block; font-family: ui-monospace, Consolas, monospace; font-size: 0.85rem; margin-left: 1.3rem; }
+    #summary { font-weight: 700; font-size: 1.1rem; padding: 0.75rem 1rem; border-radius: 8px; border: 2px solid currentColor; }
+    #summary.all-pass { color: var(--pass); }
+    #summary.has-fail { color: var(--fail); }
+    a:focus-visible { outline: 3px solid #1b5fc1; outline-offset: 2px; }
+  </style>
+  <script type="module" src="tests/tests.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Book &amp; Notes Vault: tests</h1>
+    <p>Small assertions for validators, search, stats, units and import/export. <a href="index.html">Back to the app</a></p>
+  </header>
+  <main>
+    <p id="summary" role="status" aria-live="polite">Running…</p>
+    <div id="results"></div>
+  </main>
+</body>
+</html>
