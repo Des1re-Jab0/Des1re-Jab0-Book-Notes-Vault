@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Book &amp; Notes Vault</title>
+  <meta name="description" content="Catalog your books, tag them, track pages and search everything with regular expressions.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles/main.css">
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('js');
+      try {
+        var saved = JSON.parse(localStorage.getItem('vault:settings') || '{}');
+        if (saved.theme === 'light' || saved.theme === 'dark') root.dataset.theme = saved.theme;
+      } catch (e) { /* ignore, falls back to system theme */ }
+    })();
+  </script>
+  <!-- If the module can't load (e.g. opened from file://), show everything plus a hint instead of a blank page -->
+  <script type="module" src="scripts/main.js" onerror="document.documentElement.classList.replace('js', 'no-module')"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <p class="load-warning" role="alert">
+    The app couldn't start. Open it through a web server (for example the GitHub Pages link,
+    or run <code>python -m http.server</code> in this folder) instead of opening the file directly.
+  </p>
+
+  <header class="site-header">
+    <div class="wrap header-bar">
+      <h1 class="brand">
+        <a href="#dashboard">
+          <svg class="brand__logo" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+            <rect x="4" y="5" width="6" height="22" rx="1"/>
+            <rect x="12" y="8" width="6" height="19" rx="1"/>
+            <rect x="20.5" y="6.5" width="6" height="21" rx="1" transform="rotate(12 23.5 17)"/>
+          </svg>
+          <span>Book &amp; Notes Vault</span>
+        </a>
+      </h1>
+      <button type="button" class="theme-toggle" id="theme-toggle" aria-pressed="false">
+        <svg class="icon icon--moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+        <span>Dark theme</span>
+      </button>
+    </div>
+    <nav class="site-nav" aria-label="Main">
+      <ul class="wrap nav-list">
+        <li><a href="#dashboard">Dashboard</a></li>
+        <li><a href="#library">Library</a></li>
+        <li><a href="#notes">Notes</a></li>
+        <li><a href="#add">Add book</a></li>
+        <li><a href="#settings">Settings</a></li>
+        <li><a href="#about">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main" class="wrap" tabindex="-1">
+
+  </main>
+</body>
+</html>
