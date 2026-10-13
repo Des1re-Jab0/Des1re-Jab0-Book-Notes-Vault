@@ -59,6 +59,66 @@
 
   <main id="main" class="wrap" tabindex="-1">
 
+    <!-- Dashboard -->
+    <section id="dashboard" class="view" aria-labelledby="dashboard-title">
+      <header class="view-head">
+        <h2 id="dashboard-title" tabindex="-1">Dashboard</h2>
+        <p class="lede">A snapshot of everything on your shelf.</p>
+      </header>
+
+      <div class="notice" id="dash-empty" hidden>
+        <p>Nothing here yet. <a href="#add">Add your first book</a> or
+          <button type="button" class="link-btn" data-action="load-sample">load the sample shelf</button>
+          to see the dashboard fill up.</p>
+      </div>
+
+      <dl class="stat-grid">
+        <div class="stat">
+          <dt>Books</dt>
+          <dd id="stat-total">0</dd>
+          <dd class="stat__sub" id="stat-total-sub"></dd>
+        </div>
+        <div class="stat">
+          <dt>Total length</dt>
+          <dd id="stat-pages">0 pages</dd>
+          <dd class="stat__sub" id="stat-pages-sub"></dd>
+        </div>
+        <div class="stat">
+          <dt>Top tag</dt>
+          <dd id="stat-tag">–</dd>
+          <dd class="stat__sub" id="stat-tag-sub"></dd>
+        </div>
+        <div class="stat">
+          <dt>Longest book</dt>
+          <dd id="stat-longest" class="stat__text">–</dd>
+          <dd class="stat__sub" id="stat-longest-sub"></dd>
+        </div>
+      </dl>
+
+      <div class="dash-panels">
+        <section class="panel" aria-labelledby="trend-title">
+          <h3 id="trend-title">Pages added, last 7 days</h3>
+          <figure class="chart">
+            <ol class="chart__bars" id="trend-chart"></ol>
+            <figcaption class="chart__caption" id="trend-caption"></figcaption>
+          </figure>
+        </section>
+
+        <section class="panel" aria-labelledby="cap-title">
+          <h3 id="cap-title">Page cap</h3>
+          <p class="panel__intro">A ceiling on how many pages your vault holds, to keep the reading list realistic.</p>
+          <div class="cap-meter" id="cap-meter" role="meter" aria-labelledby="cap-title" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div class="cap-meter__fill" id="cap-fill"></div>
+          </div>
+          <p class="cap-message" id="cap-message"></p>
+          <p class="panel__link"><a href="#settings" data-focus="pace-cap">Change the cap</a></p>
+          <!-- Spoken updates: polite while under the cap, assertive once it's exceeded -->
+          <div class="visually-hidden" id="cap-live-polite" role="status" aria-live="polite"></div>
+          <div class="visually-hidden" id="cap-live-assertive" role="alert" aria-live="assertive"></div>
+        </section>
+      </div>
+    </section>
+
   </main>
 </body>
 </html>
