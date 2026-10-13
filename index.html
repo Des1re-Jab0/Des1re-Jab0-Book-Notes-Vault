@@ -487,5 +487,27 @@
       </ul>
     </section>
   </main>
+
+  <!-- <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p>Book &amp; Notes Vault. Data lives in your browser's local storage.</p>
+      <p><a href="tests.html">Run the tests</a></p>
+    </div>
+  </footer> -->
+
+  <!-- Shared confirm dialog -->
+  <dialog id="confirm-dialog" class="dialog" aria-labelledby="confirm-title" aria-describedby="confirm-text">
+    <form method="dialog">
+      <h2 id="confirm-title">Are you sure?</h2>
+      <p id="confirm-text"></p>
+      <div class="btn-row btn-row--end">
+        <button type="submit" value="cancel" class="btn" autofocus>Cancel</button>
+        <button type="submit" value="confirm" class="btn btn--danger" id="confirm-ok">Delete</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Toast doubles as the main polite live region -->
+  <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 </body>
 </html>
