@@ -202,6 +202,80 @@
       </div>
     </section>
 
+    <!-- Notes -->
+    <section id="notes" class="view" aria-labelledby="notes-title">
+      <header class="view-head">
+        <h2 id="notes-title" tabindex="-1">Notes</h2>
+        <p class="lede">Your reading notebook. Pages save themselves as you write.</p>
+      </header>
+
+      <div class="notebook">
+        <!-- Table of contents -->
+        <div class="notebook__sidebar">
+          <button type="button" class="btn btn--primary notebook__new" data-action="new-page">+ New page</button>
+
+          <form class="notebook__search" role="search" id="notes-search-form" aria-label="Search notebook">
+            <div class="field">
+              <label for="notes-search">Search pages (regex)</label>
+              <input id="notes-search" type="search" autocomplete="off" spellcheck="false"
+                     placeholder="e.g. chapter \d+" aria-describedby="notes-search-error">
+              <p class="field-error" id="notes-search-error"></p>
+            </div>
+            <div class="field">
+              <label for="notes-book">Show</label>
+              <select id="notes-book"></select>
+            </div>
+          </form>
+
+          <p class="result-count" id="notes-count" role="status" aria-live="polite"></p>
+          <nav aria-label="Notebook pages">
+            <ul class="page-list" id="page-list"></ul>
+          </nav>
+          <p class="page-list__empty" id="notes-empty-search" hidden>
+            No pages match.
+            <button type="button" class="link-btn" id="notes-clear">Show all pages</button>
+          </p>
+        </div>
+
+        <!-- The open page -->
+        <div class="notebook__editor" id="nb-editor" hidden>
+          <div class="paper-sheet">
+            <label for="nb-title" class="visually-hidden">Page title</label>
+            <input id="nb-title" class="paper-title" type="text" autocomplete="off" aria-describedby="nb-title-msg">
+            <p class="field-msg" id="nb-title-msg"></p>
+
+            <div class="paper-meta">
+              <div class="paper-meta__field">
+                <label for="nb-book">Book</label>
+                <select id="nb-book"></select>
+              </div>
+              <div class="paper-meta__field">
+                <label for="nb-page">Page</label>
+                <input id="nb-page" class="paper-page" type="text" inputmode="numeric" autocomplete="off" aria-describedby="nb-page-msg">
+              </div>
+            </div>
+            <p class="field-msg" id="nb-page-msg"></p>
+
+            <label for="nb-body" class="visually-hidden">Page text</label>
+            <textarea id="nb-body" class="paper" aria-describedby="nb-body-msg nb-words"></textarea>
+            <p class="field-msg" id="nb-body-msg"></p>
+          </div>
+
+          <div class="notebook__footer">
+            <p id="nb-words"></p>
+            <p id="nb-status" role="status" aria-live="polite"></p>
+            <button type="button" class="btn btn--small btn--danger-text" id="nb-delete">Delete page</button>
+          </div>
+        </div>
+
+        <div class="empty notebook__blank" id="notes-empty" hidden>
+          <h3>Your notebook is empty</h3>
+          <p>Start a page for chapter thoughts, favourite quotes, or questions for book club.</p>
+          <button type="button" class="btn btn--primary" data-action="new-page">+ New page</button>
+        </div>
+      </div>
+    </section>
+
   </main>
 </body>
 </html>
