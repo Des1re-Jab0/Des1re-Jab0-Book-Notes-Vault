@@ -41,3 +41,40 @@ Built with plain HTML, CSS and JavaScript modules. No frameworks, no build step.
   A plain array of books (like `seed.json`) imports too, and leaves your notes alone.
 - **Light/dark theme** that follows the system and can be toggled (saved).
 
+## Data model
+
+A book (record):
+
+```json
+{
+  "id": "rec_0001",
+  "title": "Things Fall Apart",
+  "author": "Chinua Achebe",
+  "pages": 209,
+  "tag": "Fiction",
+  "dateAdded": "2026-10-10",
+  "isbn": "9780435954239",
+  "description": "Book club pick.",
+  "createdAt": "2026-10-10T17:42:11.000Z",
+  "updatedAt": "2026-10-10T17:42:11.000Z"
+}
+```
+
+A notebook page (`bookId` is `""` when it isn't about a book, `page` is `null` when not given):
+
+```json
+{
+  "id": "note_0001",
+  "bookId": "rec_0001",
+  "title": "Okonkwo and fear",
+  "page": 13,
+  "body": "His whole life was ruled by fear of failure.",
+  "createdAt": "2026-10-13T09:55:55.243Z",
+  "updatedAt": "2026-10-13T09:55:55.243Z"
+}
+```
+
+Older saves used `notes` for the book description; they're still read and converted.
+JSON exports look like `{ "records": [...], "notes": [...] }`.
+More detail, wireframes and the accessibility plan are in [docs/spec.md](docs/spec.md).
+
