@@ -119,6 +119,89 @@
       </div>
     </section>
 
+    <!-- Library -->
+    <section id="library" class="view" aria-labelledby="library-title">
+      <header class="view-head">
+        <h2 id="library-title" tabindex="-1">Library</h2>
+        <p class="lede">Search with a regular expression, sort the columns, and edit any row in place.</p>
+      </header>
+
+      <form class="toolbar" role="search" id="search-form" aria-label="Search books">
+        <div class="field field--search">
+          <label for="search-input">Regex search</label>
+          <input id="search-input" type="search" autocomplete="off" spellcheck="false"
+                 placeholder="e.g. ^the\b" aria-describedby="search-hint search-error">
+          <p class="hint" id="search-hint">Press <kbd>/</kbd> to jump here. Invalid patterns won't break anything.</p>
+          <p class="field-error" id="search-error"></p>
+        </div>
+
+        <div class="toolbar__row">
+          <div class="field field--inline">
+            <label for="search-field">Search in</label>
+            <select id="search-field">
+              <option value="all">All fields</option>
+              <option value="title">Title</option>
+              <option value="author">Author</option>
+              <option value="tag">Tag</option>
+              <option value="description">Description</option>
+            </select>
+          </div>
+          <div class="field field--inline">
+            <label for="sort-select">Sort by</label>
+            <select id="sort-select">
+              <option value="dateAdded:desc">Newest first</option>
+              <option value="dateAdded:asc">Oldest first</option>
+              <option value="title:asc">Title A–Z</option>
+              <option value="title:desc">Title Z–A</option>
+              <option value="author:asc">Author A–Z</option>
+              <option value="author:desc">Author Z–A</option>
+              <option value="tag:asc">Tag A–Z</option>
+              <option value="tag:desc">Tag Z–A</option>
+              <option value="pages:asc">Pages, fewest first</option>
+              <option value="pages:desc">Pages, most first</option>
+            </select>
+          </div>
+          <label class="check">
+            <input type="checkbox" id="search-case">
+            <span>Match case</span>
+          </label>
+        </div>
+      </form>
+
+      <p class="result-count" id="result-count" role="status" aria-live="polite"></p>
+
+      <div class="table-wrap">
+        <table class="records" id="records-table" role="table">
+          <caption class="visually-hidden">Books in your vault. Column headers are buttons that change the sort order.</caption>
+          <thead role="rowgroup">
+            <tr role="row">
+              <th scope="col" role="columnheader" data-key="title"><button type="button" class="sort-btn" data-sort="title">Title <span class="sort-icon" aria-hidden="true"></span></button></th>
+              <th scope="col" role="columnheader" data-key="author"><button type="button" class="sort-btn" data-sort="author">Author <span class="sort-icon" aria-hidden="true"></span></button></th>
+              <th scope="col" role="columnheader" data-key="pages" class="num"><button type="button" class="sort-btn" data-sort="pages">Pages <span class="sort-icon" aria-hidden="true"></span></button></th>
+              <th scope="col" role="columnheader" data-key="tag"><button type="button" class="sort-btn" data-sort="tag">Tag <span class="sort-icon" aria-hidden="true"></span></button></th>
+              <th scope="col" role="columnheader" data-key="dateAdded"><button type="button" class="sort-btn" data-sort="dateAdded">Added <span class="sort-icon" aria-hidden="true"></span></button></th>
+              <th scope="col" role="columnheader"><span class="visually-hidden">Actions</span></th>
+            </tr>
+          </thead>
+          <tbody id="records-body" role="rowgroup"></tbody>
+        </table>
+      </div>
+
+      <div class="empty" id="empty-library" hidden>
+        <h3>Your vault is empty</h3>
+        <p>Add your first book, or load the sample shelf to explore the features.</p>
+        <div class="btn-row">
+          <a class="btn btn--primary" href="#add">Add a book</a>
+          <button type="button" class="btn" data-action="load-sample">Load sample books</button>
+        </div>
+      </div>
+      <div class="empty" id="empty-search" hidden>
+        <h3>No matches</h3>
+        <p>Nothing matches that pattern. Try a looser pattern, or turn off “Match case”.</p>
+        <button type="button" class="btn" id="clear-search">Clear search</button>
+      </div>
+    </section>
+
   </main>
 </body>
 </html>
