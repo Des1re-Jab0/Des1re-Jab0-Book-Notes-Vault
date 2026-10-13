@@ -276,6 +276,79 @@
       </div>
     </section>
 
+    <!-- Add / edit -->
+    <section id="add" class="view" aria-labelledby="form-title">
+      <header class="view-head">
+        <h2 id="form-title" tabindex="-1">Add a book</h2>
+        <p class="lede" id="form-lede">Fields marked “required” must be filled in. Errors show up as you type.</p>
+      </header>
+
+      <form id="book-form" class="card form" novalidate>
+        <input type="hidden" id="f-id" name="id">
+        <div class="form-grid">
+          <div class="field field--wide">
+            <label for="f-title">Title <span class="req">(required)</span></label>
+            <input id="f-title" name="title" type="text" autocomplete="off" required aria-describedby="f-title-msg">
+            <p class="field-msg" id="f-title-msg"></p>
+          </div>
+
+          <div class="field field--wide">
+            <label for="f-author">Author <span class="req">(required)</span></label>
+            <input id="f-author" name="author" type="text" autocomplete="off" required aria-describedby="f-author-hint f-author-msg">
+            <p class="hint" id="f-author-hint">Separate co-authors with “ &amp; ”.</p>
+            <p class="field-msg" id="f-author-msg"></p>
+          </div>
+
+          <div class="field">
+            <label for="f-pages">Pages <span class="req">(required)</span></label>
+            <input id="f-pages" name="pages" type="text" inputmode="numeric" autocomplete="off" required aria-describedby="f-pages-hint f-pages-msg">
+            <p class="hint" id="f-pages-hint" aria-live="polite"></p>
+            <p class="field-msg" id="f-pages-msg"></p>
+          </div>
+
+          <div class="field">
+            <label for="f-tag">Tag <span class="req">(required)</span></label>
+            <input id="f-tag" name="tag" type="text" list="tag-options" autocomplete="off" required aria-describedby="f-tag-hint f-tag-msg">
+            <datalist id="tag-options"></datalist>
+            <p class="hint" id="f-tag-hint">Pick one or type a new tag.</p>
+            <p class="field-msg" id="f-tag-msg"></p>
+          </div>
+
+          <div class="field">
+            <label for="f-dateAdded">Date added <span class="req">(required)</span></label>
+            <input id="f-dateAdded" name="dateAdded" type="text" inputmode="numeric" placeholder="YYYY-MM-DD" autocomplete="off" required aria-describedby="f-dateAdded-msg">
+            <p class="field-msg" id="f-dateAdded-msg"></p>
+          </div>
+
+          <div class="field">
+            <label for="f-isbn">ISBN <span class="opt">(optional)</span></label>
+            <input id="f-isbn" name="isbn" type="text" autocomplete="off" spellcheck="false" aria-describedby="f-isbn-hint f-isbn-msg">
+            <p class="hint" id="f-isbn-hint">10 or 13 digits, hyphens allowed.</p>
+            <p class="field-msg" id="f-isbn-msg"></p>
+          </div>
+
+          <div class="field field--wide">
+            <label for="f-description">Description <span class="opt">(optional)</span></label>
+            <textarea id="f-description" name="description" rows="4" aria-describedby="f-description-hint f-description-msg"></textarea>
+            <p class="hint" id="f-description-hint">What the book is about. Reading notes go on the Notes page.</p>
+            <p class="field-msg" id="f-description-msg"></p>
+            <p class="isbn-found" id="isbn-found" hidden>
+              <span id="isbn-found-text"></span>
+              <button type="button" class="btn btn--small" id="isbn-use">Use it</button>
+            </p>
+          </div>
+        </div>
+
+        <div class="form-summary" id="form-summary" role="alert" hidden></div>
+
+        <div class="btn-row">
+          <button type="submit" class="btn btn--primary" id="form-submit">Add book</button>
+          <button type="button" class="btn" id="form-cancel" hidden>Cancel editing</button>
+          <button type="button" class="btn btn--ghost" id="form-reset">Clear form</button>
+        </div>
+      </form>
+    </section>
+
   </main>
 </body>
 </html>
