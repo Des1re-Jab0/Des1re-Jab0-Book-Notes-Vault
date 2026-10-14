@@ -934,9 +934,11 @@ function applyTheme() {
   $('#theme-toggle').setAttribute('aria-pressed', String(effectiveTheme() === 'dark'));
 }
 
-$('#theme-toggle').addEventListener('click', () => {
-  state.updateSettings({ theme: effectiveTheme() === 'dark' ? 'light' : 'dark' });
-  applyTheme();
+document.getElementById('theme-toggle').addEventListener('click', () => {
+  const next = effectiveTheme() === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = next; // switch immediately, even if saving fails
+  document.getElementById('theme-toggle').setAttribute('aria-pressed', String(next === 'dark'));
+  try { state.updateSettings({ theme: next }); } catch (err) { console.error('Could not save theme:', err); }
 });
 
 darkQuery.addEventListener('change', applyTheme);
@@ -974,11 +976,16 @@ state.subscribe(what => {
   }
 });
 
-applyTheme();
-syncSettingsInputs();
-resetForm();
-renderAll({ announce: false });
-showView(routeFromHash() || 'dashboard', { moveFocus: false });
+// Each startup step is isolated: one failing step can no longer leave every view hidden.
+for (const step of [
+  applyTheme,
+  () => showView(routeFromHash() || 'dashboard', { moveFocus: false }),
+  syncSettingsInputs,
+  resetForm,
+  () => renderAll({ announce: false }),
+]) {
+  try { step(); } catch (err) { console.error('Startup step failed:', err); }
+}
 // the browser's own jump-to-anchor would tuck the heading under the sticky header
 requestAnimationFrame(() => window.scrollTo(0, 0));
 if (warning) ui.toast(warning, 'error');
