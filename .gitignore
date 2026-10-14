@@ -10,7 +10,6 @@ desktop.ini
 
 # Local tooling
 node_modules/
-.claude/
 *.log
 
 # Exports made while testing
