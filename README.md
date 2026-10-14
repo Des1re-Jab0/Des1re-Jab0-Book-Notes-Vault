@@ -101,3 +101,27 @@ The repeated-word rule is a **warning**, not a blocking error: titles like
 "Bora Bora" are legitimate, so you're told about it and can save anyway.
 Notebook titles and page text get the same warning.
 
+### Search patterns to try
+
+Library search (set "Search in" where noted):
+
+| Pattern | Finds |
+|---|---|
+| `^the\b` | Titles starting with "The" (case-insensitive) |
+| `\b(\w+)\s+\1\b` | Repeated words, e.g. "the the" in a description |
+| `(\w+) & \w+ \1\b` (in Author) | Co-authors sharing a surname: "Emily Bronte & Charlotte Bronte" |
+| `\b97[89]\d{10}\b` | Books with an ISBN-13 |
+| `(?<=ISBN )[\d-]+X?` (in Description) | ISBNs mentioned in descriptions (lookbehind) |
+| `\b\d{2}:\d{2}\b` | Times written in descriptions, e.g. 18:30 |
+| `\+\+` | Escaped special characters: finds "C++ Primer" |
+| `(unclosed` | Invalid on purpose: shows an error, nothing breaks |
+
+Notebook search:
+
+| Pattern | Finds |
+|---|---|
+| `chapter \d+` | Pages that mention a chapter number |
+| `^(?=[\s\S]*\bquote\b)(?=[\s\S]*\bp\.\s?\d+)` | Pages containing the word "quote" **and** a page like "p. 140", in any order (two lookaheads; `[\s\S]` also crosses line breaks, `.` doesn't) |
+| `\?$` | Pages that end with a question |
+| `brief history` | Pages about "A Brief History of Time", by matching the linked book's title even if the page never mentions it |
+
