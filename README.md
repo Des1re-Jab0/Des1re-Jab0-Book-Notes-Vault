@@ -78,3 +78,26 @@ Older saves used `notes` for the book description; they're still read and conver
 JSON exports look like `{ "records": [...], "notes": [...] }`.
 More detail, wireframes and the accessibility plan are in [docs/spec.md](docs/spec.md).
 
+## Regex catalog
+
+All patterns live in [`scripts/validators.js`](scripts/validators.js).
+
+| Field / use | Pattern | Passes | Fails |
+|---|---|---|---|
+| Title: no leading/trailing spaces | `^\S(?:.*\S)?$` | `Dune`, `C++ Primer` | ` Dune`, `Dune ` |
+| Title/author: no double spaces | `\s{2,}` (must not match) | `War and Peace` | `War  and Peace` |
+| Pages: whole number, no leading zeros | `^(?:0\|[1-9]\d*)$` (+ range 1 to 99,999) | `1`, `4215` | `007`, `12.5`, `-3` |
+| Date added (YYYY-MM-DD) | `^\d{4}-(0[1-9]\|1[0-2])-(0[1-9]\|[12]\d\|3[01])$` (+ real-date check) | `2024-02-29` | `2025-02-29`, `2026-13-01` |
+| Tag: letters, single spaces/hyphens | `^[A-Za-z]+(?:[ -][A-Za-z]+)*$` | `Non-Fiction`, `Science Fiction` | `Sci-Fi 2`, `Non--Fiction` |
+| Author (Unicode letters) | `^\p{L}[\p{L}'’.-]*(?:(?:, \| & \| )\p{L}[\p{L}'’.-]*)*$` (flag `u`) | `Ngũgĩ wa Thiong'o`, `Le Guin, Ursula K.` | `R2 D2` |
+| **Advanced:** ISBN with lookahead | `^(?:(?:\d[- ]?){9}[\dX]\|(?=97[89])(?:\d[- ]?){12}\d)$` (flag `i`) + checksum | `978-0-553-38016-3`, `080442005X` | `1234567890123`, bad check digit |
+| **Advanced:** repeated word (back-reference) | `\b(\w+)\s+\1\b` (flag `i`) | flags `the the`, `The the` | ignores `the theory` |
+| Settings: reading pace | `^(?:0\|[1-9]\d*)(?:\.\d{1,2})?$` | `2`, `1.5` | `1.555`, `.5` |
+| Notebook: page number (optional) | `^(?:0\|[1-9]\d*)$` (+ at least 1) | `13`, empty | `12.5`, `0` |
+| Notebook: tidy title on save | `/\s+/g` → one space, then trim | `"  Chapter   3 "` → `"Chapter 3"` | |
+| Import: record / note id | `^rec_\d{4,}$`, `^note_\d{4,}$` | `rec_0001`, `note_0001` | `abc`, `rec_1` |
+
+The repeated-word rule is a **warning**, not a blocking error: titles like
+"Bora Bora" are legitimate, so you're told about it and can save anyway.
+Notebook titles and page text get the same warning.
+
