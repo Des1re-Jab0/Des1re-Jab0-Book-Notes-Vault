@@ -218,3 +218,19 @@ docs/spec.md        M1 spec, wireframes, a11y plan
 
 All paths are relative, so the app works from the repo sub-path.
 
+## References
+
+- MDN Web Docs: [`<dialog>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog),
+  [`aria-sort`](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-sort),
+  [ARIA live regions](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Live_Regions),
+  [Regular expressions guide](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions)
+- [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/) for colour checks
+- The `compileRegex`, `highlight` and storage helpers grew out of the starter snippets in the
+  assignment brief.
+- ISBN check-digit rules: ISBN-10 weights 10 to 1 (mod 11), ISBN-13 alternating 1/3 (mod 10).
+  ISBNs in `seed.json` are checksum-valid sample values.
+
+## Contact
+
+- GitHub: [YOUR-GITHUB-USERNAME](https://github.com/YOUR-GITHUB-USERNAME)
+- Email: nezadavid265@gmail.com
