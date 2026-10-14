@@ -125,3 +125,40 @@ Notebook search:
 | `\?$` | Pages that end with a question |
 | `brief history` | Pages about "A Brief History of Time", by matching the linked book's title even if the page never mentions it |
 
+## Keyboard map
+
+| Key | Action |
+|---|---|
+| <kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd> | Move between controls |
+| <kbd>Enter</kbd> / <kbd>Space</kbd> | Activate buttons, links, column sort |
+| <kbd>/</kbd> | Jump to the search box (from anywhere outside a text field) |
+| <kbd>N</kbd> | Open the Add book form |
+| <kbd>Enter</kbd> (in a row being edited) | Save the row |
+| <kbd>Esc</kbd> (in a row being edited) | Cancel the edit |
+| <kbd>Esc</kbd> (in a dialog) | Close the dialog without deleting |
+
+The first <kbd>Tab</kbd> on the page reveals a "Skip to main content" link.
+
+## Accessibility notes
+
+- Landmarks (`header`, `nav`, `main`, `section`, `footer`) and a clean heading order:
+  one `h1`, an `h2` per view, `h3` inside.
+- Changing views moves focus to the new view's heading, so screen reader users hear where they landed.
+- Every input has a visible `<label>`. Hints and errors are tied in with `aria-describedby`,
+  and invalid fields get `aria-invalid`. Errors use text and an icon, not only colour.
+- Live regions: the toast (`role="status"`), the search result counts (books and notes), the
+  import report (`role="alert"`), and the page cap (polite under the cap, assertive when over).
+- The notebook's page list is a `<nav aria-label="Notebook pages">` of buttons; the open page is
+  marked with `aria-current="true"`. The title, page text, book and page number all have labels,
+  and autosave reports "Saving…" / "Saved" through a polite status message (written only when it
+  changes, so typing doesn't flood a screen reader). Enter in the title moves to the page text.
+- On phones the table is restyled as cards, but explicit `role="table|row|cell|columnheader"`
+  keeps it a table for assistive tech.
+- Sortable headers are real buttons with `aria-sort` on the `th`.
+- Highlighting builds DOM nodes (`<mark>`) instead of injecting HTML, so a title like
+  `<script>` stays text and sentences are read normally.
+- Focus is always visible (3px outline in a colour that contrasts in both themes).
+- Text colours meet WCAG AA (4.5:1) in light and dark themes. Checked with the WebAIM contrast checker.
+- Touch targets are at least 44px tall for primary controls.
+- `prefers-reduced-motion` disables the view fade, bar growth and row flash.
+
