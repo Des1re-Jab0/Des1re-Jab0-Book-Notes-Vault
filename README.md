@@ -162,3 +162,28 @@ The first <kbd>Tab</kbd> on the page reveals a "Skip to main content" link.
 - Touch targets are at least 44px tall for primary controls.
 - `prefers-reduced-motion` disables the view fade, bar growth and row flash.
 
+## Running locally
+
+ES modules don't load from `file://`, so serve the folder:
+
+```bash
+python -m http.server 8000
+```
+
+Then open http://localhost:8000. Any static server works (VS Code Live Server, `npx serve`, …).
+Click **Load sample books** to load [`seed.json`](seed.json) (13 records with edge cases:
+leap day, 1-page and 4,215-page books, Unicode names, regex special characters,
+duplicate words, ISBNs hidden in descriptions). Loading samples never touches your notes.
+
+## Tests
+
+- In the browser: open [`tests.html`](tests.html) (also linked in the app footer).
+  It runs 107 assertions on the validators, regex compiler, highlighting, sorting,
+  stats, cap logic, unit conversion, CSV escaping, import validation, and the notebook
+  (validation, search, filters, ordering, export/import round-trip, old-data migration).
+- In a terminal (Node 22+):
+
+```bash
+node tests/tests.js
+```
+
