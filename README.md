@@ -187,3 +187,34 @@ duplicate words, ISBNs hidden in descriptions). Loading samples never touches yo
 node tests/tests.js
 ```
 
+## Project structure
+
+```
+index.html          app shell, all six views
+tests.html          browser test page
+seed.json           13 sample records
+styles/main.css     mobile-first styles, light/dark tokens
+scripts/
+  main.js           routing, events, glue
+  state.js          records, notes + settings, change notifications
+  storage.js        localStorage load/save with recovery
+  validators.js     every regex rule + record/import validation
+  search.js         safe regex compiler, filter, highlight, sort
+  stats.js          dashboard numbers, 7-day trend, cap status
+  units.js          pages ↔ minutes ↔ hours
+  io.js             JSON/CSV export, file reading, import parsing
+  ui.js             DOM rendering helpers
+tests/tests.js      assertions used by tests.html
+assets/favicon.svg
+docs/spec.md        M1 spec, wireframes, a11y plan
+```
+
+## Deploying to GitHub Pages
+
+1. Push to a public repo named `book-notes-vault`.
+2. Repo **Settings → Pages → Build and deployment**: Source "Deploy from a branch",
+   branch `main`, folder `/ (root)`.
+3. Wait a minute, then open `https://YOUR-GITHUB-USERNAME.github.io/book-notes-vault/`.
+
+All paths are relative, so the app works from the repo sub-path.
+
