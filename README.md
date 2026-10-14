@@ -4,7 +4,7 @@ A small, accessible catalog for your books. Tag them, track how many pages are
 waiting, keep reading notes, and search everything with real regular expressions.
 Built with plain HTML, CSS and JavaScript modules. No frameworks, no build step.
 
-- **Live site:** https://YOUR-GITHUB-USERNAME.github.io/book-notes-vault/
+- **Live site:** https://Des1re-Jab0.github.io/book-notes-vault/
 - **Demo video:** _add your unlisted link here_
 - **Theme:** Book & Notes Vault
 

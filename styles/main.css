@@ -259,7 +259,6 @@ main:focus {
 
 /* ---------- header & nav ---------- */
 
-/* sticky from 768px up; on phones it would eat too much of the screen */
 .site-header {
   position: relative;
   z-index: 20;
@@ -322,7 +321,7 @@ main:focus {
   border-color: var(--accent);
 }
 
-/* the label is visible from 360px up; below that the icon + aria label carries it */
+/* the label is visible from 360px up */
 .theme-toggle span {
   position: absolute;
   width: 1px;
@@ -1972,3 +1971,8 @@ legend {
     display: block;
   }
 }
+/* Dashboard: make the trend chart fill its panel */
+.dash-panels { align-items: stretch; }
+.dash-panels .panel { display: flex; flex-direction: column; }
+.dash-panels .chart { flex: 1; display: flex; flex-direction: column; margin: 0; }
+.dash-panels .chart__bars { flex: 1; min-height: 22rem; }
