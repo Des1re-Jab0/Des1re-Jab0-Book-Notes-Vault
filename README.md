@@ -232,5 +232,5 @@ All paths are relative, so the app works from the repo sub-path.
 
 ## Contact
 
-- GitHub: [YOUR-GITHUB-USERNAME](https://github.com/YOUR-GITHUB-USERNAME)
-- Email: nezadavid265@gmail.com
+- GitHub: [Des1re-Jab0](https://github.com/Des1re-Jab0)
+- Email: d.manzijabo@alustudent.com
