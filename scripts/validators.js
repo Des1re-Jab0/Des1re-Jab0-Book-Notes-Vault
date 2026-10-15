@@ -1,24 +1,14 @@
-// Validation rules for books and settings.
-// Every pattern lives here so the form, the importer and tests.html all
-// check data the same way.
+
 
 export const patterns = {
-  // no leading/trailing whitespace
   title: /^\S(?:.*\S)?$/,
   doubleSpace: /\s{2,}/,
-  // letters (any script), plus . ' - inside names; words joined by a single
-  // space, ", " or " & " so "Le Guin, Ursula K." and "A & B" both pass
   author: /^\p{L}[\p{L}'’.-]*(?:(?:, | & | )\p{L}[\p{L}'’.-]*)*$/u,
-  // whole pages, no leading zeros
   pages: /^(?:0|[1-9]\d*)$/,
   date: /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/,
   tag: /^[A-Za-z]+(?:[ -][A-Za-z]+)*$/,
-  // ISBN-10, or ISBN-13 which must start with 978/979 (lookahead).
-  // Single hyphens or spaces between digits are allowed.
   isbn: /^(?:(?:\d[- ]?){9}[\dX]|(?=97[89])(?:\d[- ]?){12}\d)$/i,
-  // back-reference: the same word twice in a row ("the the")
   duplicateWord: /\b(\w+)\s+\1\b/i,
-  // amounts with up to 2 decimals, used for settings like reading pace
   decimal: /^(?:0|[1-9]\d*)(?:\.\d{1,2})?$/,
   recordId: /^rec_\d{4,}$/,
   noteId: /^note_\d{4,}$/,
@@ -46,7 +36,6 @@ export function isRealDate(str) {
   if (!patterns.date.test(str)) return false;
   const [y, m, d] = str.split('-').map(Number);
   const dt = new Date(Date.UTC(y, m - 1, d));
-  // Feb 30 rolls over to March, so compare the parts back
   return dt.getUTCFullYear() === y && dt.getUTCMonth() === m - 1 && dt.getUTCDate() === d;
 }
 
@@ -72,7 +61,6 @@ export function isbnChecksumOk(isbn) {
   return false;
 }
 
-// Pull checksum-valid ISBNs out of free text (e.g. a pasted description).
 export function extractIsbns(text) {
   const candidates = text.match(/\b(?:97[89][- ]?)?(?:\d[- ]?){9}[\dX]\b/gi) || [];
   return [...new Set(candidates.map(normalizeIsbn))].filter(isbnChecksumOk);
@@ -149,7 +137,6 @@ export function validateField(name, raw) {
   return rule(typeof raw === 'string' ? raw : raw == null ? '' : String(raw));
 }
 
-// Validates the editable part of a book. Returns cleaned values + errors by field.
 export function validateBook(input) {
   const values = {};
   const errors = {};
@@ -165,7 +152,6 @@ export function validateBook(input) {
 
 const isIsoTimestamp = v => typeof v === 'string' && !Number.isNaN(Date.parse(v));
 
-// Full record check, used for localStorage and JSON import.
 export function validateRecord(rec) {
   if (!rec || typeof rec !== 'object' || Array.isArray(rec)) {
     return { ok: false, errors: ['not an object'] };
@@ -178,7 +164,6 @@ export function validateRecord(rec) {
     if (typeof rec[key] !== 'string') errors.push(`${key} must be text`);
   }
   if (typeof rec.pages !== 'number' || !Number.isInteger(rec.pages)) errors.push('pages must be a whole number');
-  // "notes" is the old name of "description"; older saves and exports still use it
   for (const key of ['isbn', 'description', 'notes']) {
     if (rec[key] != null && typeof rec[key] !== 'string') errors.push(`${key} must be text`);
   }
@@ -199,8 +184,6 @@ export function validateRecord(rec) {
 
 /* ---------- notes (notebook pages) ---------- */
 
-// Autosave tidies a title instead of rejecting it mid-typing:
-// "  Chapter   3 " -> "Chapter 3"
 export function tidyTitle(raw) {
   return String(raw ?? '').replace(/\s+/g, ' ').trim();
 }
@@ -227,8 +210,6 @@ const noteRules = {
     return ok(Number(str));
   },
 
-  // kept exactly as typed: line breaks and spacing are part of a notebook page,
-  // and a brand-new page is allowed to be blank
   body(raw) {
     const text = raw || '';
     if (text.length > LIMITS.noteBodyMax) {
@@ -281,7 +262,6 @@ export function validateNote(note) {
 
 /* ---------- import ---------- */
 
-// Checks every item, collects readable errors, and rejects duplicate ids.
 function validateList(list, check, key, kind) {
   const items = [];
   const errors = [];
@@ -301,8 +281,6 @@ function validateList(list, check, key, kind) {
   return { items, errors };
 }
 
-// Accepts the parsed JSON from an import: a plain array of books (like
-// seed.json), or { records: [...], notes: [...] } as written by Export.
 export function validateImport(data) {
   const list = Array.isArray(data) ? data : data && Array.isArray(data.records) ? data.records : null;
   if (!list) {
@@ -311,7 +289,6 @@ export function validateImport(data) {
   const books = validateList(list, validateRecord, 'record', 'book');
   const errors = [...books.errors];
 
-  // hasNotes tells "the file has no notes section" apart from "it has zero notes"
   const hasNotes = !Array.isArray(data) && data.notes != null;
   let notes = [];
   if (hasNotes) {
@@ -326,7 +303,6 @@ export function validateImport(data) {
   return { ok: errors.length === 0, records: books.items, notes, hasNotes, errors };
 }
 
-// Settings validators share the same style.
 export function validatePace(raw) {
   const str = String(raw ?? '').trim();
   if (!patterns.decimal.test(str)) return fail('Use a number like 2 or 1.5 (max two decimals).');

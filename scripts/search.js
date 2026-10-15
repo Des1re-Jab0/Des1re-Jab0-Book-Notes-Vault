@@ -10,8 +10,6 @@ export const SEARCH_FIELDS = {
 
 const MAX_PATTERN = 200;
 
-// Never throws. `re` is global (for highlighting), `tester` is the same
-// pattern without the g flag so .test() doesn't carry lastIndex around.
 export function compileRegex(input, { caseSensitive = false } = {}) {
   if (!input) return { re: null, tester: null, error: '' };
   if (input.length > MAX_PATTERN) {
@@ -21,7 +19,6 @@ export function compileRegex(input, { caseSensitive = false } = {}) {
   try {
     return { re: new RegExp(input, flags + 'g'), tester: new RegExp(input, flags), error: '' };
   } catch (err) {
-    // "Invalid regular expression: /(/: Unterminated group" -> keep the useful bit
     const reason = err.message.split(': ').pop();
     return { re: null, tester: null, error: `That pattern isn't valid: ${reason}.` };
   }
@@ -37,8 +34,6 @@ export function filterRecords(list, tester, field = 'all') {
   return tester ? list.filter(r => matchesRecord(r, tester, field)) : list.slice();
 }
 
-// book: 'any' (every note), '' (general notes only) or a book id.
-// bookTitle(id) lets a search like "hawking" find notes on that book.
 export function filterNotes(list, tester, { book = 'any', bookTitle = () => '' } = {}) {
   return list.filter(n => {
     if (book !== 'any' && n.bookId !== book) return false;
@@ -47,13 +42,10 @@ export function filterNotes(list, tester, { book = 'any', bookTitle = () => '' }
   });
 }
 
-// most recently edited page first, like a notes app
 export function sortNotes(list) {
   return list.slice().sort((a, b) => b.updatedAt.localeCompare(a.updatedAt) || b.id.localeCompare(a.id));
 }
 
-// Splits text into plain/matched pieces. Empty matches (from patterns like
-// ^ or a*) are dropped so they can't produce empty <mark>s or loop forever.
 export function splitMatches(text, re) {
   const str = String(text ?? '');
   if (!re || !str) return [{ text: str, match: false }];
@@ -70,8 +62,6 @@ export function splitMatches(text, re) {
   return parts.length ? parts : [{ text: str, match: false }];
 }
 
-// Builds DOM nodes rather than an HTML string, so titles like
-// "<script>" stay as text and screen readers read the sentence normally.
 export function highlight(text, re) {
   const frag = document.createDocumentFragment();
   for (const part of splitMatches(text, re)) {
@@ -86,7 +76,6 @@ export function highlight(text, re) {
   return frag;
 }
 
-// Short preview of long text, centred on the first match if there is one.
 export function excerpt(text, tester, max = 140) {
   if (!text || text.length <= max) return text || '';
   const hit = tester ? text.search(tester) : -1;
@@ -111,6 +100,5 @@ export const SORT_KEYS = Object.keys(comparators);
 export function sortRecords(list, key = 'dateAdded', dir = 'desc') {
   const cmp = comparators[key] || comparators.dateAdded;
   const sign = dir === 'asc' ? 1 : -1;
-  // title as a stable tie-breaker so equal dates don't shuffle around
   return list.slice().sort((a, b) => sign * cmp(a, b) || comparators.title(a, b));
 }

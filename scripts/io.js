@@ -1,5 +1,3 @@
-// Import / export helpers.
-
 import { validateImport } from './validators.js';
 import { toISODate } from './stats.js';
 
@@ -17,7 +15,6 @@ const CSV_COLUMNS = ['id', 'title', 'author', 'pages', 'tag', 'dateAdded', 'isbn
 
 export function csvCell(value) {
   let str = value == null ? '' : String(value);
-  // spreadsheet apps run cells starting with these as formulas
   if (/^[=+\-@\t\r]/.test(str)) str = `'${str}`;
   return /[",\r\n]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str;
 }
@@ -40,7 +37,6 @@ export function downloadFile(filename, content, type) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-// Books and notes together
 export function buildExport(records, notes) {
   return { app: 'book-notes-vault', version: 2, exportedAt: new Date().toISOString(), records, notes };
 }
@@ -51,7 +47,6 @@ export function exportJSON(records, notes = []) {
 }
 
 export function exportCSV(records) {
-  // BOM so Excel opens accented names correctly
   downloadFile(`book-vault-${toISODate(new Date())}.csv`, '﻿' + toCSV(records), 'text/csv;charset=utf-8');
 }
 

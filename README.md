@@ -80,62 +80,61 @@ More detail, wireframes and the accessibility plan are in [docs/spec.md](docs/sp
 
 ## Regex catalog
 
-All patterns live in [`scripts/validators.js`](scripts/validators.js).
+**In short:** 8 validation rules check every form field as you type, plus 2 advanced rules
+(a lookahead and a back-reference). Errors appear inline under the field and block saving;
+warnings appear in amber and don't. All patterns live in
+[`scripts/validators.js`](scripts/validators.js) and are tested in [`tests.html`](tests.html).
 
-| Field / use | Pattern | Passes | Fails |
-|---|---|---|---|
-| Title: no leading/trailing spaces | `^\S(?:.*\S)?$` | `Dune`, `C++ Primer` | ` Dune`, `Dune ` |
-| Title/author: no double spaces | `\s{2,}` (must not match) | `War and Peace` | `War  and Peace` |
-| Pages: whole number, no leading zeros | `^(?:0\|[1-9]\d*)$` (+ range 1 to 99,999) | `1`, `4215` | `007`, `12.5`, `-3` |
-| Date added (YYYY-MM-DD) | `^\d{4}-(0[1-9]\|1[0-2])-(0[1-9]\|[12]\d\|3[01])$` (+ real-date check) | `2024-02-29` | `2025-02-29`, `2026-13-01` |
-| Tag: letters, single spaces/hyphens | `^[A-Za-z]+(?:[ -][A-Za-z]+)*$` | `Non-Fiction`, `Science Fiction` | `Sci-Fi 2`, `Non--Fiction` |
-| Author (Unicode letters) | `^\p{L}[\p{L}'’.-]*(?:(?:, \| & \| )\p{L}[\p{L}'’.-]*)*$` (flag `u`) | `Ngũgĩ wa Thiong'o`, `Le Guin, Ursula K.` | `R2 D2` |
-| **Advanced:** ISBN with lookahead | `^(?:(?:\d[- ]?){9}[\dX]\|(?=97[89])(?:\d[- ]?){12}\d)$` (flag `i`) + checksum | `978-0-553-38016-3`, `080442005X` | `1234567890123`, bad check digit |
-| **Advanced:** repeated word (back-reference) | `\b(\w+)\s+\1\b` (flag `i`) | flags `the the`, `The the` | ignores `the theory` |
-| Settings: reading pace | `^(?:0\|[1-9]\d*)(?:\.\d{1,2})?$` | `2`, `1.5` | `1.555`, `.5` |
-| Notebook: page number (optional) | `^(?:0\|[1-9]\d*)$` (+ at least 1) | `13`, empty | `12.5`, `0` |
-| Notebook: tidy title on save | `/\s+/g` → one space, then trim | `"  Chapter   3 "` → `"Chapter 3"` | |
-| Import: record / note id | `^rec_\d{4,}$`, `^note_\d{4,}$` | `rec_0001`, `note_0001` | `abc`, `rec_1` |
+### Basic rules (block saving)
 
-The repeated-word rule is a **warning**, not a blocking error: titles like
-"Bora Bora" are legitimate, so you're told about it and can save anyway.
-Notebook titles and page text get the same warning.
+| Field | Pattern | In plain words | Passes | Fails |
+|---|---|---|---|---|
+| Title | `^\S(?:.*\S)?$` and no `\s{2,}` | No spaces at the start or end, no double spaces | `Dune`, `C++ Primer` | ` Dune`, `War  and Peace` |
+| Pages | `^(?:0\|[1-9]\d*)$` | Whole number 1–99,999, no leading zeros | `1`, `4215` | `007`, `12.5`, `-3` |
+| Date added | `^\d{4}-(0[1-9]\|1[0-2])-(0[1-9]\|[12]\d\|3[01])$` | `YYYY-MM-DD`, and a real calendar date | `2024-02-29` | `2025-02-29`, `2026-13-01` |
+| Tag | `^[A-Za-z]+(?:[ -][A-Za-z]+)*$` | Letters; words joined by one space or hyphen | `Non-Fiction`, `Science Fiction` | `Sci-Fi 2`, `Non--Fiction` |
+| Author | `^\p{L}[\p{L}'’.-]*(?:(?:, \| & \| )\p{L}[\p{L}'’.-]*)*$` (flag `u`) | Letters from any language; co-authors joined by `, ` or ` & ` | `Ngũgĩ wa Thiong'o`, `Le Guin, Ursula K.` | `R2 D2` |
+| Reading pace | `^(?:0\|[1-9]\d*)(?:\.\d{1,2})?$` | Number with at most 2 decimals | `2`, `1.5` | `1.555`, `.5` |
+| Notebook page no. | `^(?:0\|[1-9]\d*)$` | Optional; whole number from 1 | `13`, empty | `12.5`, `0` |
+| Import ids | `^rec_\d{4,}$`, `^note_\d{4,}$` | Book and notebook-page id format | `rec_0001`, `note_0001` | `abc`, `rec_1` |
+
+### Advanced rules
+
+| Rule | Pattern | How it works | Passes | Fails |
+|---|---|---|---|---|
+| **ISBN (lookahead)** | `^(?:(?:\d[- ]?){9}[\dX]\|(?=97[89])(?:\d[- ]?){12}\d)$` (flag `i`) | 10 digits (last may be `X`), or 13 digits that must start with 978/979. `(?=97[89])` checks the start without consuming it. A check-digit test runs afterwards. | `978-0-553-38016-3`, `080442005X` | `1234567890123`, wrong check digit |
+| **Repeated word (back-reference)** | `\b(\w+)\s+\1\b` (flag `i`) | `(\w+)` captures a word; `\1` means "that same word again" | flags `the the`, `The the` | ignores `the theory` |
+
+The repeated-word rule is a **warning**, not an error: real titles like "Bora Bora" exist, so
+you're told and can still save. It also runs on notebook titles and page text.
 
 ### Search patterns to try
 
 Library search (set "Search in" where noted):
 
-| Pattern | Finds |
-|---|---|
-| `^the\b` | Titles starting with "The" (case-insensitive) |
-| `\b(\w+)\s+\1\b` | Repeated words, e.g. "the the" in a description |
-| `(\w+) & \w+ \1\b` (in Author) | Co-authors sharing a surname: "Emily Bronte & Charlotte Bronte" |
-| `\b97[89]\d{10}\b` | Books with an ISBN-13 |
-| `(?<=ISBN )[\d-]+X?` (in Description) | ISBNs mentioned in descriptions (lookbehind) |
-| `\b\d{2}:\d{2}\b` | Times written in descriptions, e.g. 18:30 |
-| `\+\+` | Escaped special characters: finds "C++ Primer" |
-| `(unclosed` | Invalid on purpose: shows an error, nothing breaks |
+| Pattern                               | Finds                                                           |
+|---                                    |---                                                              |
+| `^the\b`                              | Titles starting with "The" (case-insensitive)                   |
+| `\b(\w+)\s+\1\b`                      | Repeated words, e.g. "the the" in a description                 |
+| `(\w+) & \w+ \1\b` (in Author)        | Co-authors sharing a surname: "Emily Bronte & Charlotte Bronte" |
+| `\b97[89]\d{10}\b`                    | Books with an ISBN-13                                           |
+| `(?<=ISBN )[\d-]+X?` (in Description) | ISBNs mentioned in descriptions (lookbehind)                    |
+| `\b\d{2}:\d{2}\b`                     | Times written in descriptions, e.g. 18:30                       |
+| `\+\+`                                | Escaped special characters: finds "C++ Primer"                  |
+| `(unclosed`                           | Invalid on purpose: shows an error, nothing breaks              |
 
-Notebook search:
-
-| Pattern | Finds |
-|---|---|
-| `chapter \d+` | Pages that mention a chapter number |
-| `^(?=[\s\S]*\bquote\b)(?=[\s\S]*\bp\.\s?\d+)` | Pages containing the word "quote" **and** a page like "p. 140", in any order (two lookaheads; `[\s\S]` also crosses line breaks, `.` doesn't) |
-| `\?$` | Pages that end with a question |
-| `brief history` | Pages about "A Brief History of Time", by matching the linked book's title even if the page never mentions it |
 
 ## Keyboard map
 
-| Key | Action |
-|---|---|
-| <kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd> | Move between controls |
-| <kbd>Enter</kbd> / <kbd>Space</kbd> | Activate buttons, links, column sort |
-| <kbd>/</kbd> | Jump to the search box (from anywhere outside a text field) |
-| <kbd>N</kbd> | Open the Add book form |
-| <kbd>Enter</kbd> (in a row being edited) | Save the row |
-| <kbd>Esc</kbd> (in a row being edited) | Cancel the edit |
-| <kbd>Esc</kbd> (in a dialog) | Close the dialog without deleting |
+| Key                                              | Action                                                      |
+|---                                               |---                                                          |
+| <kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd> | Move between controls                                       |
+| <kbd>Enter</kbd> / <kbd>Space</kbd>              | Activate buttons, links, column sort                        |
+| <kbd>/</kbd>                                     | Jump to the search box (from anywhere outside a text field) |
+| <kbd>N</kbd>                                     | Open the Add book form                                      |
+| <kbd>Enter</kbd> (in a row being edited)         | Save the row                                                |
+| <kbd>Esc</kbd> (in a row being edited)           | Cancel the edit                                             |
+| <kbd>Esc</kbd> (in a dialog)                     | Close the dialog without deleting                           |
 
 The first <kbd>Tab</kbd> on the page reveals a "Skip to main content" link.
 
@@ -209,14 +208,8 @@ assets/favicon.svg
 docs/spec.md        M1 spec, wireframes, a11y plan
 ```
 
-## Deploying to GitHub Pages
 
-1. Push to a public repo named `book-notes-vault`.
-2. Repo **Settings → Pages → Build and deployment**: Source "Deploy from a branch",
-   branch `main`, folder `/ (root)`.
-3. Wait a minute, then open `https://YOUR-GITHUB-USERNAME.github.io/book-notes-vault/`.
 
-All paths are relative, so the app works from the repo sub-path.
 
 ## References
 

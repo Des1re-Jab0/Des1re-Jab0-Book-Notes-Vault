@@ -1,5 +1,3 @@
-// Tiny test runner. Open tests.html in the browser, or run `node tests/tests.js`.
-
 import {
   patterns, validateField, validateBook, validateRecord, validateImport,
   isRealDate, isbnChecksumOk, extractIsbns, validatePace, validateCap,

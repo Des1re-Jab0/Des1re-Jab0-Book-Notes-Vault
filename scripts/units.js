@@ -1,6 +1,3 @@
-// Pages <-> reading time. Minutes are the common base; the pace
-// (minutes per page) comes from Settings.
-
 export const UNITS = ['pages', 'minutes', 'hours'];
 
 const toMinutes = {
@@ -26,7 +23,6 @@ export function round(n, places = 2) {
   return Math.round(n * f) / f;
 }
 
-// 645 -> "10 h 45 min"
 export function formatDuration(minutes) {
   const total = Math.round(minutes);
   const h = Math.floor(total / 60);

@@ -1,5 +1,3 @@
-// Everything that touches the DOM for rendering. No app logic here;
-// main.js decides what to show and calls these.
 
 import { highlight, excerpt } from './search.js';
 import { formatPages, formatDuration, convert } from './units.js';
@@ -7,7 +5,6 @@ import { formatPages, formatDuration, convert } from './units.js';
 export const $ = (sel, root = document) => root.querySelector(sel);
 export const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 
-// Small element builder: el('td', { class: 'num' }, 'text', otherNode)
 export function el(tag, attrs = {}, ...children) {
   const node = document.createElement(tag);
   for (const [key, val] of Object.entries(attrs)) {
@@ -141,7 +138,6 @@ export function formatStamp(iso, now = new Date()) {
     : d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
-// The notebook's table of contents: one button per page.
 export function renderPageList(list, { re, bookTitle, openId }) {
   const items = list.map(note => {
     const book = bookTitle(note.bookId);
@@ -158,8 +154,6 @@ export function renderPageList(list, { re, bookTitle, openId }) {
   $('#page-list').replaceChildren(...items);
 }
 
-// Fills a <select> with books (A–Z) after some fixed first options,
-// keeping the current choice if that book still exists.
 export function fillBookSelect(select, books, firstOptions) {
   // an empty <select> reports '' as its value, which is a real option here
   const current = select.options.length ? select.value : firstOptions[0][0];

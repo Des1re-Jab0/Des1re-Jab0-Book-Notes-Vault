@@ -1,5 +1,3 @@
-// Numbers for the dashboard. Pure functions, easy to test.
-
 export function toISODate(d) {
   const pad = n => String(n).padStart(2, '0');
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -18,7 +16,6 @@ export function topTag(records) {
   return best;
 }
 
-// One entry per day, oldest first, ending today.
 export function lastSevenDays(records, today = new Date()) {
   const days = [];
   for (let i = 6; i >= 0; i--) {
@@ -55,7 +52,6 @@ export function computeStats(records, today = new Date()) {
   };
 }
 
-// level: 'off' (no cap), 'under', 'near' (90%+), 'over'
 export function capStatus(used, cap) {
   if (!cap) return { level: 'off', used, cap: 0, remaining: 0, over: 0, percent: 0 };
   const percent = Math.round((used / cap) * 100);

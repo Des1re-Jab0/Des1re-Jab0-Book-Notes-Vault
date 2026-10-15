@@ -22,7 +22,7 @@ const VIEWS = {
   about: 'About',
 };
 
-// UI-only state (not persisted)
+
 const view = {
   query: '',
   field: 'all',
@@ -31,7 +31,7 @@ const view = {
   sortDir: 'desc',
   editingId: null,
   flashId: null,
-  noteBook: 'any', // notebook filter: 'any', '' (pages without a book) or a book id
+  noteBook: 'any', 
 };
 
 let search = compileRegex('');
@@ -122,14 +122,18 @@ function renderLibrary() {
   else setLiveText(count, `${all.length} ${all.length === 1 ? 'book' : 'books'}.`);
 }
 
-function renderDashboard({ announce = true } = {}) {
+function renderDashboard() {
   const settings = state.getSettings();
   const stats = computeStats(state.getRecords());
   $('#dash-empty').hidden = stats.total > 0;
   ui.renderStats(stats, settings, state.getNotes().length);
   ui.renderTrend(stats.trend);
+}
 
-  const cap = capStatus(stats.totalPages, settings.pageCap);
+
+function renderCapStatus({ announce = true } = {}) {
+  const totalPages = state.getRecords().reduce((sum, r) => sum + r.pages, 0);
+  const cap = capStatus(totalPages, state.getSettings().pageCap);
   ui.renderCap(cap);
 
   const message = ui.capMessage(cap);
@@ -150,8 +154,7 @@ function renderSettings() {
   updateConverter();
 }
 
-// Live regions re-announce on every write, and autosave re-renders a lot,
-// so only write when the text actually changes.
+
 function setLiveText(node, text) {
   if (node.textContent !== text) node.textContent = text;
 }
@@ -165,7 +168,7 @@ function renderNotesView() {
   const all = state.getNotes();
   const visible = visiblePages();
 
-  // nothing open (first visit, or the open page was deleted): open the top page
+  
   if (!state.findNote(notebook.openId)) {
     notebook.openId = null;
     if (visible.length) loadPage(visible[0]);
@@ -186,8 +189,9 @@ function renderNotesView() {
 
 function renderAll(opts) {
   renderLibrary();
-  renderDashboard(opts);
+  renderDashboard();
   renderSettings();
+  renderCapStatus(opts);
   renderNotesView();
 }
 
@@ -315,7 +319,7 @@ async function confirmDelete(id) {
     return;
   }
 
-  // work out where focus should land once the row is gone
+
   const rows = $$('#records-body tr');
   const i = rows.findIndex(r => r.dataset.id === id);
   const neighbourId = (rows[i + 1] || rows[i - 1])?.dataset.id;
@@ -340,7 +344,7 @@ tbody.addEventListener('click', e => {
     case 'save': saveInline(row); break;
     case 'delete': confirmDelete(id); break;
     case 'more':
-      // re-rendering removes this link, so navigate ourselves
+     
       e.preventDefault();
       view.editingId = null;
       fillForm(state.findRecord(id));
@@ -348,7 +352,7 @@ tbody.addEventListener('click', e => {
       go('add');
       break;
     case 'notes':
-      // open the notebook filtered to this book's pages
+      
       e.preventDefault();
       showNotesFor(id);
       break;
@@ -366,7 +370,7 @@ tbody.addEventListener('keydown', e => {
   }
 });
 
-// live feedback while editing a row
+
 tbody.addEventListener('input', e => {
   if (!e.target.matches('.inline-input')) return;
   ui.setFieldMessage(e.target, validateField(e.target.name, e.target.value));
@@ -501,8 +505,8 @@ $('#isbn-use').addEventListener('click', () => {
 /* ---------- notes: the notebook ---------- */
 
 const notebook = {
-  openId: null,    // page shown on the paper
-  saveTimer: null, // pending autosave
+  openId: null,    
+  saveTimer: null, 
 };
 const nbTitle = $('#nb-title');
 const nbBook = $('#nb-book');
@@ -514,7 +518,7 @@ function visiblePages() {
 }
 
 function setSaveStatus(text) {
-  // only touch the live region when the message really changes
+  
   const status = $('#nb-status');
   if (status.textContent !== text) status.textContent = text;
 }
@@ -524,7 +528,7 @@ function updateWordCount() {
   $('#nb-words').textContent = `${words.toLocaleString()} ${words === 1 ? 'word' : 'words'}`;
 }
 
-// Put a page on the paper. Doesn't save anything.
+
 function loadPage(note) {
   notebook.openId = note.id;
   nbTitle.value = note.title;
@@ -544,12 +548,12 @@ function openPage(id, focusTarget = nbBody) {
   renderNotesView();
   if (focusTarget) {
     focusTarget.focus();
-    // continue writing where the page ends
+    
     if (focusTarget === nbBody) nbBody.setSelectionRange(nbBody.value.length, nbBody.value.length);
   }
 }
 
-// Autosave: wait for a short pause in typing, then save.
+
 function scheduleSave() {
   clearTimeout(notebook.saveTimer);
   notebook.saveTimer = setTimeout(saveNow, 600);
@@ -573,7 +577,7 @@ function saveNow() {
   ui.setFieldMessage(nbPage, page);
   ui.setFieldMessage(nbBody, body);
 
-  // save what's valid, so a typo in the page number never costs you your text
+ 
   const values = { bookId: nbBook.value };
   if (title.ok) values.title = title.value;
   if (page.ok) values.page = page.value;
@@ -588,7 +592,7 @@ function saveNow() {
 
 function newPage() {
   flushSave();
-  // a search could hide the new page, so clear it
+  
   if (noteSearch.tester) {
     noteSearchInput.value = '';
     noteSearch = compileRegex('');
@@ -603,7 +607,7 @@ function newPage() {
   ui.toast('New page added. Give it a title, then start writing.');
 }
 
-// From the Library: open the notebook filtered to one book.
+
 function showNotesFor(bookId) {
   flushSave();
   view.noteBook = bookId;
@@ -627,7 +631,7 @@ nbTitle.addEventListener('keydown', e => {
   }
 });
 
-// tidy the title once you leave it: "  chapter   3 " -> "chapter 3"
+
 nbTitle.addEventListener('blur', () => {
   const tidy = tidyTitle(nbTitle.value) || 'Untitled page';
   if (tidy !== nbTitle.value) {
@@ -636,7 +640,7 @@ nbTitle.addEventListener('blur', () => {
   }
 });
 
-// save straight away when leaving the page or the tab
+
 editor.addEventListener('focusout', e => {
   if (!editor.contains(e.relatedTarget)) flushSave();
 });
@@ -668,7 +672,7 @@ $('#nb-delete').addEventListener('click', async () => {
     return;
   }
 
-  // open the neighbouring page afterwards, like turning to the next sheet
+ 
   const items = $$('#page-list .page-item');
   const i = items.findIndex(b => b.dataset.id === note.id);
   const nextId = (items[i + 1] || items[i - 1])?.dataset.id;
@@ -703,7 +707,6 @@ $('#notes-search-form').addEventListener('submit', e => {
 $('#notes-book').addEventListener('change', e => {
   flushSave();
   view.noteBook = e.target.value;
-  // if the open page isn't in the filtered list, switch to the first one that is
   const visible = visiblePages();
   if (visible.length && !visible.some(n => n.id === notebook.openId)) loadPage(visible[0]);
   renderNotesView();
@@ -807,8 +810,6 @@ function showImportReport(title, tone, details = []) {
     details.length ? ui.el('ul', {}, ...details.map(d => ui.el('li', {}, d))) : null);
 }
 
-// notes is null when the file had no notes section (e.g. seed.json):
-// then the notes you already have are left alone, even in replace mode.
 async function loadRecordsInto(records, mode, notes = null) {
   if (mode === 'replace' && (state.getRecords().length || (notes && state.getNotes().length))) {
     const yes = await ui.confirmDialog({
@@ -934,11 +935,9 @@ function applyTheme() {
   $('#theme-toggle').setAttribute('aria-pressed', String(effectiveTheme() === 'dark'));
 }
 
-document.getElementById('theme-toggle').addEventListener('click', () => {
-  const next = effectiveTheme() === 'dark' ? 'light' : 'dark';
-  document.documentElement.dataset.theme = next; // switch immediately, even if saving fails
-  document.getElementById('theme-toggle').setAttribute('aria-pressed', String(next === 'dark'));
-  try { state.updateSettings({ theme: next }); } catch (err) { console.error('Could not save theme:', err); }
+$('#theme-toggle').addEventListener('click', () => {
+  state.updateSettings({ theme: effectiveTheme() === 'dark' ? 'light' : 'dark' });
+  applyTheme();
 });
 
 darkQuery.addEventListener('change', applyTheme);
@@ -968,7 +967,7 @@ state.subscribe(what => {
   if (what === 'records' || what === 'settings') renderAll();
   if (what === 'notes') {
     renderNotesView();
-    renderLibrary(); // note counts on each book
+    renderLibrary(); 
     renderDashboard();
   }
   if (what === 'save-error') {
@@ -976,16 +975,10 @@ state.subscribe(what => {
   }
 });
 
-// Each startup step is isolated: one failing step can no longer leave every view hidden.
-for (const step of [
-  applyTheme,
-  () => showView(routeFromHash() || 'dashboard', { moveFocus: false }),
-  syncSettingsInputs,
-  resetForm,
-  () => renderAll({ announce: false }),
-]) {
-  try { step(); } catch (err) { console.error('Startup step failed:', err); }
-}
-// the browser's own jump-to-anchor would tuck the heading under the sticky header
+applyTheme();
+syncSettingsInputs();
+resetForm();
+renderAll({ announce: false });
+showView(routeFromHash() || 'dashboard', { moveFocus: false });
 requestAnimationFrame(() => window.scrollTo(0, 0));
 if (warning) ui.toast(warning, 'error');

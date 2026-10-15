@@ -1,6 +1,3 @@
-// Thin wrapper around localStorage. Never throws: private browsing, full
-// quota or hand-edited JSON should degrade to a warning, not a blank page.
-
 import { validateImport } from './validators.js';
 
 export const KEYS = {
@@ -55,7 +52,6 @@ export function saveRecords(records) {
   return write(KEYS.records, JSON.stringify(records));
 }
 
-// Same recovery idea as records: keep what's valid, back up the rest.
 export function loadNotes() {
   const raw = read(KEYS.notes);
   if (raw == null) return { notes: [], warning: '' };

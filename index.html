@@ -15,10 +15,9 @@
       try {
         var saved = JSON.parse(localStorage.getItem('vault:settings') || '{}');
         if (saved.theme === 'light' || saved.theme === 'dark') root.dataset.theme = saved.theme;
-      } catch (e) { /* ignore, falls back to system theme */ }
+      } catch (e) {}
     })();
   </script>
-  <!-- If the module can't load (e.g. opened from file://), show everything plus a hint instead of a blank page -->
   <script type="module" src="scripts/main.js" onerror="document.documentElement.classList.replace('js', 'no-module')"></script>
 </head>
 <body>
@@ -103,18 +102,6 @@
             <figcaption class="chart__caption" id="trend-caption"></figcaption>
           </figure>
         </section>
-
-        <!-- <section class="panel" aria-labelledby="cap-title">
-          <h3 id="cap-title">Page cap</h3>
-          <p class="panel__intro">A ceiling on how many pages your vault holds, to keep the reading list realistic.</p>
-          <div class="cap-meter" id="cap-meter" role="meter" aria-labelledby="cap-title" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-            <div class="cap-meter__fill" id="cap-fill"></div>
-          </div>
-          <p class="cap-message" id="cap-message"></p>
-          <p class="panel__link"><a href="#settings" data-focus="pace-cap">Change the cap</a></p>
-          <div class="visually-hidden" id="cap-live-polite" role="status" aria-live="polite"></div>
-          <div class="visually-hidden" id="cap-live-assertive" role="alert" aria-live="assertive"></div>
-        </section> -->
       </div>
     </section>
 
@@ -209,7 +196,9 @@
       </header>
 
       <div class="notebook">
+
         <!-- Table of contents -->
+
         <div class="notebook__sidebar">
           <button type="button" class="btn btn--primary notebook__new" data-action="new-page">+ New page</button>
 
@@ -373,10 +362,19 @@
               </select>
             </div>
             <div class="field">
-              <label for="pace-cap">Page cap</label>
+              <label for="pace-cap" id="pace-cap-label">Page cap</label>
               <input id="pace-cap" type="text" inputmode="numeric" autocomplete="off" aria-describedby="pace-cap-hint pace-cap-msg">
-              <p class="hint" id="pace-cap-hint">Leave blank for no cap.</p>
+              <p class="hint" id="pace-cap-hint">A ceiling on how many pages your vault holds, to keep the reading list realistic. Leave blank for no cap.</p>
               <p class="field-msg" id="pace-cap-msg"></p>
+            </div>
+
+            <div class="cap-status">
+              <div class="cap-meter" id="cap-meter" role="meter" aria-labelledby="pace-cap-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                <div class="cap-meter__fill" id="cap-fill"></div>
+              </div>
+              <p class="cap-message" id="cap-message"></p>
+              <div class="visually-hidden" id="cap-live-polite" role="status" aria-live="polite"></div>
+              <div class="visually-hidden" id="cap-live-assertive" role="alert" aria-live="assertive"></div>
             </div>
           </fieldset>
         </form>
@@ -487,7 +485,6 @@
     </section>
   </main>
 
-
   <!-- Shared confirm dialog -->
   <dialog id="confirm-dialog" class="dialog" aria-labelledby="confirm-title" aria-describedby="confirm-text">
     <form method="dialog">
@@ -500,7 +497,6 @@
     </form>
   </dialog>
 
-  <!-- Toast doubles as the main polite live region -->
   <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 </body>
 </html>
