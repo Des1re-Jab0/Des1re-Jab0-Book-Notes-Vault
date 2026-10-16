@@ -1,3 +1,6 @@
+/* Book & Notes Vault
+   Mobile-first. Breakpoints: 360px (small phones up), 768px (tablet), 1024px (desktop). */
+
 /* ---------- tokens ---------- */
 
 :root {
@@ -39,7 +42,7 @@
   color-scheme: light;
 }
 
-/*  dark palette  */
+/* dark palette, applied by the toggle or by the OS setting */
 :root[data-theme="dark"] {
   --bg: #15130f;
   --surface: #1f1c17;
@@ -182,6 +185,7 @@ svg {
   display: none !important;
 }
 
+/* one consistent, clearly visible focus ring */
 :focus-visible {
   outline: 3px solid var(--focus);
   outline-offset: 2px;
@@ -191,7 +195,7 @@ svg {
   outline: none;
 }
 
-
+/* headings receive focus on view change but shouldn't show a ring for that */
 h2[tabindex="-1"]:focus,
 main:focus {
   outline: none;
@@ -255,6 +259,7 @@ main:focus {
 
 /* ---------- header & nav ---------- */
 
+/* sticky from 768px up; on phones it would eat too much of the screen */
 .site-header {
   position: relative;
   z-index: 20;
@@ -317,6 +322,7 @@ main:focus {
   border-color: var(--accent);
 }
 
+/* the label is visible from 360px up; below that the icon + aria label carries it */
 .theme-toggle span {
   position: absolute;
   width: 1px;
@@ -362,6 +368,7 @@ main {
   padding-block: 1.5rem 3rem;
 }
 
+/* With JS on, only the active view shows. Without JS every section stays visible. */
 .js .view {
   display: none;
 }
@@ -912,6 +919,8 @@ legend {
   color: var(--muted);
 }
 
+/* Records: cards on small screens, a real table from 768px.
+   Explicit ARIA roles in the markup keep table semantics when display changes. */
 .records {
   width: 100%;
   border-collapse: collapse;
@@ -1024,6 +1033,7 @@ legend {
   font-size: 0.875rem;
 }
 
+/* row being edited */
 .records tr.is-editing {
   border-color: var(--accent);
   box-shadow: 0 0 0 1px var(--accent), var(--shadow);
@@ -1047,6 +1057,7 @@ legend {
   flex-direction: row;
 }
 
+/* brief highlight after saving */
 .records tr.is-updated {
   animation: row-flash 1.6s ease-out;
 }
@@ -1081,6 +1092,7 @@ legend {
 
 /* ---------- notes: the notebook ---------- */
 
+/* "3 notes" link under a book title in the Library */
 .note-count {
   display: inline-block;
   margin-top: 0.3rem;
@@ -1094,8 +1106,9 @@ legend {
   gap: 1rem;
 }
 
+/* table of contents */
 .notebook__sidebar {
-
+  /* without this, a long one-line preview would stretch the sidebar */
   min-width: 0;
   padding: 1rem;
   background: var(--surface);
@@ -1162,6 +1175,7 @@ legend {
   color: var(--muted);
 }
 
+/* dot separators between book, page and date */
 .page-item__meta > * + *::before {
   content: "·";
   margin-right: 0.4rem;
@@ -1199,6 +1213,7 @@ legend {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
+  /* the red margin line runs down the whole sheet */
   background:
     linear-gradient(90deg,
       transparent calc(var(--margin-x) - 0.75rem),
@@ -1208,6 +1223,7 @@ legend {
     var(--paper);
 }
 
+/* overrides the generic input/textarea look, hence the extra .paper-sheet */
 .paper-sheet .paper-title {
   display: block;
   width: 100%;
@@ -1265,6 +1281,7 @@ legend {
   padding: 0 1rem 0.4rem var(--margin-x);
 }
 
+/* ruled lines move with the text when the page scrolls (background-attachment: local) */
 .paper-sheet .paper {
   display: block;
   width: 100%;
@@ -1384,6 +1401,7 @@ legend {
   margin-bottom: 0.5rem;
 }
 
+/* real file input stays focusable; its label is styled as the button */
 .file-input {
   position: absolute;
   width: 1px;
@@ -1581,6 +1599,41 @@ legend {
 /* ---------- 768px: tablet ---------- */
 
 @media (min-width: 768px) {
+  /* Dashboard chart grows to fill the rest of the screen:
+     main -> dashboard view -> panels -> panel -> figure -> bars all stretch */
+  main {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .js #dashboard.is-active {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+
+  #dashboard .dash-panels {
+    flex: 1;
+  }
+
+  #dashboard .panel {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .chart {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+
+  .chart__bars {
+    flex: 1;
+    height: auto;
+    min-height: 11rem;
+    max-height: 30rem;
+  }
+
   /* notebook: contents on the left, the open page on the right */
   .notebook {
     flex-direction: row;
